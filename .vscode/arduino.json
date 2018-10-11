@@ -1,6 +1,6 @@
 {
-    "sketch": "aufgabe1.ino",
-    "board": "arduino:avr:nano",
-    "configuration": "cpu=atmega328",
-    "output": "build"
+    "sketch": "ampelschaltung.ino",
+    "board": "arduino:avr:uno",
+    "output": "build",
+    "port": "COM3"
 }

@@ -1,14 +1,21 @@
 {
     "configurations": [
         {
-            "name": "Win32",
+            "name": "Arduino",
             "includePath": [
-                "C:\\Program Files (x86)\\Arduino\\tools\\**",
-                "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\**"
+                "${workspaceRoot}"
             ],
-            "forcedInclude": [
-                "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino\\Arduino.h"
-            ],
+            "browse": {
+                "path": [
+                    "C:/Program Files (x86)/Arduino/hardware",
+                    "C:/Program Files (x86)/Arduino/libraries",
+                    "C:/Users/Jonas Kuske/Documents/Arduino/libraries/",
+                    "C:/Users/Jonas Kuske/Documents/Arduino/hardware/",
+                    "${workspaceRoot}"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
             "intelliSenseMode": "msvc-x64",
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
