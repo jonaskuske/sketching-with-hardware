@@ -53,21 +53,21 @@ class TrafficLight {
     void runSequence() {
         // Grün-Phase
         turnOn(green);
-        delay(1800);
+        delay(4500);
 
         // Gelb-Phase
         turnOff(green);
         turnOn(yellow);
-        delay(800);
+        delay(1200);
 
         // Rot-Phase
         turnOff(yellow);
         turnOn(red);
-        delay(1800);
+        delay(4000);
 
         // Rot-Gelb-Phase
         turnOn(yellow);
-        delay(800);
+        delay(1200);
 
         // Sequenz beendet
         turnOff(red, yellow);
