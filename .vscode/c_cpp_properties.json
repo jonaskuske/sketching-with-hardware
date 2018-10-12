@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Arduino",
+            "name": "Win32",
             "includePath": [
                 "${workspaceRoot}"
             ],
@@ -9,8 +9,6 @@
                 "path": [
                     "C:/Program Files (x86)/Arduino/hardware",
                     "C:/Program Files (x86)/Arduino/libraries",
-                    "C:/Users/Jonas Kuske/Documents/Arduino/libraries/",
-                    "C:/Users/Jonas Kuske/Documents/Arduino/hardware/",
                     "${workspaceRoot}"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
