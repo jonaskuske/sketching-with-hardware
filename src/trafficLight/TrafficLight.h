@@ -9,8 +9,9 @@
  */
 class TrafficLight {
    public:
+    TrafficLight(int greenPin, int yellowPin, int redPin, int defaultPin);
     TrafficLight(int greenPin, int yellowPin, int redPin);
-    bool isTurnedOn = false;
+    bool isTurnedOn = false, isGreen = false;
     void turnOn();
     void turnOff();
     void setGreen();

@@ -6,7 +6,7 @@
  * Constructor:
  * speichert die LED-Pins, konfiguriert den pinMode und definiert Grün als aktiv
  */
-TrafficLight::TrafficLight(int greenPin, int yellowPin, int redPin) {
+TrafficLight::TrafficLight(int greenPin, int yellowPin, int redPin, int initialPin) {
     _greenPin = greenPin;
     _yellowPin = yellowPin;
     _redPin = redPin;
@@ -15,14 +15,18 @@ TrafficLight::TrafficLight(int greenPin, int yellowPin, int redPin) {
     pinMode(_yellowPin, OUTPUT);
     pinMode(_redPin, OUTPUT);
 
-    _activePin = greenPin;
+    _activePin = initialPin;
 }
+// Overload, um den grünen Pin als initialPin festzulegen, falls nicht definiert
+TrafficLight::TrafficLight(int greenPin, int yellowPin, int redPin) : TrafficLight(greenPin, yellowPin, redPin, greenPin) {}
 
 /**
- * Als aktiv markierte LED der Ampel einschalten
+ * Erst resetten, dann als aktiv markierte LED der Ampel einschalten
  */
 void TrafficLight::turnOn() {
+    turnOff();
     turnPinOn(_activePin);
+    if (_activePin == _greenPin) isGreen = true;
     isTurnedOn = true;
 }
 
@@ -31,6 +35,7 @@ void TrafficLight::turnOn() {
  */
 void TrafficLight::turnOff() {
     turnPinOff(_greenPin, _yellowPin, _redPin);
+    isGreen = false;
     isTurnedOn = false;
 }
 
@@ -53,6 +58,7 @@ void TrafficLight::setGreen() {
     turnPinOn(_greenPin);
     _activePin = _greenPin;
     isTurnedOn = true;
+    isGreen = true;
 }
 
 /**
@@ -74,11 +80,13 @@ void TrafficLight::setRed() {
     turnPinOn(_redPin);
     _activePin = _redPin;
     isTurnedOn = true;
+    isGreen = false;
 }
 
 void TrafficLight::warningMode(int interval) {
-    unsigned long currentTime = millis();
+    isGreen = false;
 
+    unsigned long currentTime = millis();
     if (currentTime - _previousTime >= interval) {
         if (isTurnedOn) {
             turnOff();
