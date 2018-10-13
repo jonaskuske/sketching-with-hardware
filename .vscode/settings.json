@@ -1,8 +1,12 @@
 {
-  "arduino.path": "C:\\Program Files (x86)\\Arduino",
+  "arduino.path": "C:/Program Files (x86)/Arduino",
   "arduino.additionalUrls": "",
   "arduino.logLevel": "info",
+  "arduino.defaultBaudRate": 9600,
   "C_Cpp.intelliSenseEngine": "Tag Parser",
   "C_Cpp.intelliSenseEngineFallback": "Disabled",
-  "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 0}"
+  "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 0}",
+  "files.associations": {
+    "cmath": "cpp"
+  }
 }

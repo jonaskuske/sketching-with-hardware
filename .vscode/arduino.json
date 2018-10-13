@@ -1,6 +1,6 @@
 {
-    "sketch": "ampelschaltung.ino",
+    "sketch": "sketching-with-hardware.ino",
     "board": "arduino:avr:uno",
-    "output": "build",
-    "port": "COM3"
+    "port": "COM3",
+    "output": "../.arduino-cache"
 }
