@@ -4,7 +4,7 @@
 
 /**
  * Constructor:
- * speichert die LED-Pins, konfiguriert den pinMode und definiert Grün als aktiv
+ * speichert die LED-Pins, konfiguriert den pinMode und legt Startwert von _activePin fest
  */
 TrafficLight::TrafficLight(int greenPin, int yellowPin, int redPin, int initialPin) {
     _greenPin = greenPin;
@@ -26,7 +26,7 @@ TrafficLight::TrafficLight(int greenPin, int yellowPin, int redPin) : TrafficLig
 void TrafficLight::turnOn() {
     turnOff();
     turnPinOn(_activePin);
-    if (_activePin == _greenPin) isGreen = true;
+    isGreen = _activePin == _greenPin;
     isTurnedOn = true;
 }
 
@@ -67,6 +67,7 @@ void TrafficLight::setGreen() {
  */
 void TrafficLight::setRed() {
     if (isTurnedOn && _activePin == _redPin) {
+        // Ampel ist schon rot, keine Änderung nötig
         return;
     }
     if (isTurnedOn && _activePin == _greenPin) {
@@ -83,6 +84,9 @@ void TrafficLight::setRed() {
     isGreen = false;
 }
 
+/*
+ * Lässt gelbe LED blinken. Verwendet timer statt delay(), um Loop nicht zu blockieren
+ */
 void TrafficLight::warningMode(int interval) {
     isGreen = false;
 
