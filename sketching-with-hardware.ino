@@ -2,13 +2,16 @@
 #include "src/pins.h"
 // Definiert Tasten der IR Fernbedienung
 #include "src/keys.h"
+
 // Klasse zur Verwendung des Ultraschall-Sensors
 #include "src/distanceController/DistanceController.h"
 // Klasse zur Steuerung von Ampeln
 #include "src/trafficLight/TrafficLight.h"
+
 // IR Library: https://github.com/z3t0/Arduino-IRremote
 #include "src/libraries/IRremote/IRremote.h"
 
+// IR Receiver instanziieren
 IRrecv irrecv(IR_PIN);
 decode_results results;
 
@@ -23,22 +26,28 @@ DistanceController sideStreetTrigger(TRIGGER_PIN, ECHO_PIN);
 bool isOff = false;
 bool isDisabled = false;
 
+/*
+ * Verkehr auf Seitenstraße erlauben: Hauptstraße auf Rot, Seitenstraße auf Grün
+ */
 void allowTrafficOnSideStreet() {
-    // Schon Grün? Abbruch
+    // Seitenstraße hat schon Grün? Abbruch
     if (sideStreet.isGreen) return;
 
     mainStreet.setRed();
     delay(900);
     sideStreet.setGreen();
 }
+/*
+ * Verkehr auf Haupstraße erlauben: Seitenstraße auf Rot, Haupstraße auf Grün
+ */
 void allowTrafficOnMainStreet() {
-    // Schon Grün? Abbruch
+    // Hauptsrraße hat schon Grün? Abbruch
     if (mainStreet.isGreen) return;
+
     sideStreet.setRed();
     delay(900);
     mainStreet.setGreen();
 }
-
 /**
  * Grünphase der Nebenstraße durchlaufen, danach wieder Rot
  */
@@ -55,6 +64,7 @@ bool checkForTrafficOnSideStreet() {
     long distanceToNextCar = sideStreetTrigger.getCurrentDistance();
     return distanceToNextCar < 20;
 }
+// Speichert, wann letzte Grünphase war, um Timing kontrollieren zu können
 unsigned long previousGreenPhase = millis();
 /**
  * Kontrolliert Verkehr auf Nebenstraße: leitet Grünphase ein,
@@ -71,14 +81,17 @@ void controlTrafficOnSideStreet() {
 
     // Grün-Phase auslösen
     runSideStreetGreenPhase();
-    // Zeitpunkt letzter Grünphase und Queue-Status aktualisieren
-    trafficQueued = false;
+    // Zeitpunkt letzter Grünphase aktualisieren
     previousGreenPhase = millis();
 }
 
+/**
+ * Reagiert auf Input der IR Fernbedienung
+ */
 void handleIRInput(decode_results input) {
     // Long-Press ignorieren
     if (input.value == 0XFFFFFFFF) return;
+    
     // Ein/Aus-Button: Ampeln ein- oder auschalten
     if (input.value == REMOTE_KEY_OFF) {
         isOff = !isOff;
@@ -93,10 +106,10 @@ void handleIRInput(decode_results input) {
     }
     // Falls ausgeschaltet: Abbrechen, auf keine anderen Buttons reagieren
     if (isOff) return;
+    
     // EQ-Button: Ampeln als inaktiv markieren (gelbes Blinken)
     if (input.value == REMOTE_KEY_EQ) {
         isDisabled = !isDisabled;
-        isOff = false;
         if (!isDisabled) {
             mainStreet.turnOn();
             sideStreet.turnOn();
@@ -134,8 +147,8 @@ void setup() {
 }
 
 /**
- * Alle 50ms prüfen, ob Auto in Nebenstraße - falls ja,
- * Ampel der Nebenstraße eine Zeit lang auf Grün stellen
+ * Auf Input der IR Fernbedienung warten. Falls Ampeln nicht aus/deaktiviert:
+ * automatisches Verkehrssteuerprogramm ausführen
  */
 void loop() {
     // Input der IR Fernbedienung verarbeiten
@@ -154,7 +167,6 @@ void loop() {
         return;
     }
 
-    // Verkehr beobachten und managen
+    // Verkehr auf Seitenstraße beobachten und managen
     controlTrafficOnSideStreet();
-    delay(50);
 }
