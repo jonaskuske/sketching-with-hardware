@@ -13,7 +13,7 @@
 
 // IR Receiver instanziieren
 IRrecv irrecv(IR_PIN);
-decode_results results;
+decode_results remoteInput;
 
 // Ampeln instanziieren, für sideStreet den roten Pin als initialPin angeben
 TrafficLight mainStreet(GREEN_MAIN, YELLOW_MAIN, RED_MAIN);
@@ -152,8 +152,8 @@ void setup() {
  */
 void loop() {
     // Input der IR Fernbedienung verarbeiten
-    if (irrecv.decode(&results)) {
-        handleIRInput(results);
+    if (irrecv.decode(&remoteInput)) {
+        handleIRInput(remoteInput);
         irrecv.resume();
     }
 
