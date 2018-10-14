@@ -2,6 +2,8 @@
 
 ## Traffic Control
 
+> This project is set up for compilation in Visual Studio Code using the [Arduino extension](https://github.com/Microsoft/vscode-arduino/). It should also compile in the default Arduino IDE, though some files might initially not be visible there.
+
 An Arduino implementation of a traffic control system for a crossroad with one main street and a side street crossing into it: 
 ```
 _______________________
@@ -22,7 +24,7 @@ Once a car driving up the side street approaches the traffic light (which is det
 Note that traffic on main street always is allowed to pass for a specified amound of time (currently `5s`) before side street can be set to green. If this amount is not reached yet, the green phase of side street will be delayed.
 
 ### Traffic can also be controlled manually using the remote as follows:  
-> ON/OFF: Turns traffic lights on or off  
-> EQ: Disables traffic lights – their yellow lights start blinking (to signal that they are inactive)  
-> PLAY: Let traffic on side street pass for a limited amount of time (simulates an approaching car)  
-> SKIP/PREV: Switch between allowing traffic on main street to pass or allowing traffic on side street to pass  
+  - **ON/OFF**: Turns traffic lights on or off  
+  - **EQ**: Disables traffic lights – their yellow lights start blinking (to signal that they are inactive)  
+  - **PLAY**: Let traffic on side street pass for a limited amount of time (simulates an approaching car)  
+  - **SKIP/PREV**: Switch between allowing traffic on main street to pass or allowing traffic on side street to pass  
