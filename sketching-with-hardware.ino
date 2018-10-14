@@ -91,7 +91,7 @@ void controlTrafficOnSideStreet() {
 void handleIRInput(decode_results input) {
     // Long-Press ignorieren
     if (input.value == 0XFFFFFFFF) return;
-    
+
     // Ein/Aus-Button: Ampeln ein- oder auschalten
     if (input.value == REMOTE_KEY_OFF) {
         isOff = !isOff;
@@ -106,7 +106,7 @@ void handleIRInput(decode_results input) {
     }
     // Falls ausgeschaltet: Abbrechen, auf keine anderen Buttons reagieren
     if (isOff) return;
-    
+
     // EQ-Button: Ampeln als inaktiv markieren (gelbes Blinken)
     if (input.value == REMOTE_KEY_EQ) {
         isDisabled = !isDisabled;

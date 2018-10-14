@@ -16,7 +16,6 @@ void turnPinOn(Head pin, Tail... rest) {
     turnPinOn(rest...);
 }
 
-
 // Variadisches Template: turnPinOff akzeptiert beliebig viele Argumente
 template <typename Head, typename... Tail>
 void turnPinOff(Head pin, Tail... rest) {
