@@ -4,18 +4,12 @@
 
 /**
  * Constructor:
- * speichert die LED-Pins, konfiguriert den pinMode und legt Startwert von _activePin fest
+ * speichert LED-Pins & Startwert von _activePin, konfiguriert pinMode
  */
-TrafficLight::TrafficLight(int greenPin, int yellowPin, int redPin, int initialPin) {
-    _greenPin = greenPin;
-    _yellowPin = yellowPin;
-    _redPin = redPin;
-
+TrafficLight::TrafficLight(int greenPin, int yellowPin, int redPin, int initialPin) : _greenPin(greenPin), _yellowPin(yellowPin), _redPin(redPin), _activePin(initialPin) {
     pinMode(_greenPin, OUTPUT);
     pinMode(_yellowPin, OUTPUT);
     pinMode(_redPin, OUTPUT);
-
-    _activePin = initialPin;
 }
 // Overload, um den grünen Pin als initialPin festzulegen, falls nicht definiert
 TrafficLight::TrafficLight(int greenPin, int yellowPin, int redPin) : TrafficLight(greenPin, yellowPin, redPin, greenPin) {}

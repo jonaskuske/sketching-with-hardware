@@ -6,10 +6,7 @@
  * Constructor:
  * Zugewiesene Pins speichern und pinMode konfigurieren
  */
-DistanceController::DistanceController(int triggerPin, int echoPin) {
-    _triggerPin = triggerPin;
-    _echoPin = echoPin;
-
+DistanceController::DistanceController(int triggerPin, int echoPin) : _triggerPin(triggerPin), _echoPin(echoPin) {
     pinMode(_triggerPin, OUTPUT);
     pinMode(_echoPin, INPUT);
 }
