@@ -1,9 +1,11 @@
 # Class: Sketching mit Hardware
 
-> Note: The comments within the code are written in German as of now.
-
 This repository contains the code for my university class "sketching with hardware", an introduction to working with hardware (Arduino) and C++.
 
+> Note: The comments within the code are written in German as of now.  
+
+&nbsp;  
+___
 ### Lesson 1: Traffic Control
 Implementation of an automatic traffic control system, monitoring traffic with an ultrasonic sensor. Can also be controlled with an IR Remote.
 > see branch: [`traffic-control`](https://github.com/jonaskuske/sketching-with-hardware/tree/traffic-control)
