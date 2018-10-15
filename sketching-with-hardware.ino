@@ -12,7 +12,7 @@
 #include "src/libraries/IRremote/IRremote.h"
 
 // IR Receiver instanziieren
-IRrecv irrecv(IR_PIN);
+IRrecv IRReceiver(IR_PIN);
 decode_results remoteInput;
 
 // Ampeln instanziieren, für sideStreet den roten Pin als initialPin angeben
@@ -26,7 +26,7 @@ DistanceController sideStreetTrigger(TRIGGER_PIN, ECHO_PIN);
 bool isOff = false;
 bool isDisabled = false;
 
-/*
+/**
  * Verkehr auf Seitenstraße erlauben: Hauptstraße auf Rot, Seitenstraße auf Grün
  */
 void allowTrafficOnSideStreet() {
@@ -37,7 +37,7 @@ void allowTrafficOnSideStreet() {
     delay(900);
     sideStreet.setGreen();
 }
-/*
+/**
  * Verkehr auf Haupstraße erlauben: Seitenstraße auf Rot, Haupstraße auf Grün
  */
 void allowTrafficOnMainStreet() {
@@ -142,8 +142,8 @@ void handleIRInput(decode_results input) {
 void setup() {
     // Serial.begin(9600);  // Serial Monitor aktivieren
 
-    irrecv.enableIRIn();
-    irrecv.blink13(true);
+    IRReceiver.enableIRIn();
+    IRReceiver.blink13(true);
 }
 
 /**
@@ -152,9 +152,9 @@ void setup() {
  */
 void loop() {
     // Input der IR Fernbedienung verarbeiten
-    if (irrecv.decode(&remoteInput)) {
+    if (IRReceiver.decode(&remoteInput)) {
         handleIRInput(remoteInput);
-        irrecv.resume();
+        IRReceiver.resume();
     }
 
     // Ampeln aus? Abbruch
