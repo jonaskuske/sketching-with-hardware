@@ -1,172 +1,68 @@
-// Definiert die Pins, an denen LEDs etc. angeschlossen sind
-#include "src/pins.h"
-// Definiert Tasten der IR Fernbedienung
-#include "src/keys.h"
+#define LED_PIN 9
+#define BUTTON_PIN 8
 
-// Klasse zur Verwendung des Ultraschall-Sensors
-#include "src/distanceController/DistanceController.h"
-// Klasse zur Steuerung von Ampeln
-#include "src/trafficLight/TrafficLight.h"
+// Kontrollvariablen, um Helligkeit der LED und Abstufung beim Faden zu steuern
+int brightness = 0;
+int fadeStep = 5;
 
-// IR Library: https://github.com/z3t0/Arduino-IRremote
-#include "src/libraries/IRremote/IRremote.h"
-
-// IR Receiver instanziieren
-IRrecv irrecv(IR_PIN);
-decode_results remoteInput;
-
-// Ampeln instanziieren, für sideStreet den roten Pin als initialPin angeben
-TrafficLight mainStreet(GREEN_MAIN, YELLOW_MAIN, RED_MAIN);
-TrafficLight sideStreet(GREEN_SIDE, YELLOW_SIDE, RED_SIDE, RED_SIDE);
-
-// Abstandssensor, der Verkehr auf Nebenstraße überwacht, instanziieren
-DistanceController sideStreetTrigger(TRIGGER_PIN, ECHO_PIN);
-
-// Kontroll-Variablen
-bool isOff = false;
-bool isDisabled = false;
-
-/*
- * Verkehr auf Seitenstraße erlauben: Hauptstraße auf Rot, Seitenstraße auf Grün
- */
-void allowTrafficOnSideStreet() {
-    // Seitenstraße hat schon Grün? Abbruch
-    if (sideStreet.isGreen) return;
-
-    mainStreet.setRed();
-    delay(900);
-    sideStreet.setGreen();
-}
-/*
- * Verkehr auf Haupstraße erlauben: Seitenstraße auf Rot, Haupstraße auf Grün
- */
-void allowTrafficOnMainStreet() {
-    // Hauptsrraße hat schon Grün? Abbruch
-    if (mainStreet.isGreen) return;
-
-    sideStreet.setRed();
-    delay(900);
-    mainStreet.setGreen();
-}
-/**
- * Grünphase der Nebenstraße durchlaufen, danach wieder Rot
- */
-void runSideStreetGreenPhase() {
-    allowTrafficOnSideStreet();
-    delay(3500);
-    allowTrafficOnMainStreet();
-}
+// active State, entscheidet ob LED blinkt oder ausgefadet wird
+bool isActive = false;
 
 /**
- * Liefert true zurück, falls sich ein Auto nahe der Nebenstraßen-Ampel befindet
- */
-bool checkForTrafficOnSideStreet() {
-    long distanceToNextCar = sideStreetTrigger.getCurrentDistance();
-    return distanceToNextCar < 20;
-}
-// Speichert, wann letzte Grünphase war, um Timing kontrollieren zu können
-unsigned long previousGreenPhase = millis();
-/**
- * Kontrolliert Verkehr auf Nebenstraße: leitet Grünphase ein,
- * falls Autos warten & Hauptstraße schon lange genug Grün hatte
- */
-void controlTrafficOnSideStreet() {
-    unsigned long now = millis();
-    bool trafficQueued = checkForTrafficOnSideStreet();
-
-    // Kein wartendes Auto / Hauptstraße noch nicht mindestens 5s Grün: Abbruch
-    if (!trafficQueued || now - previousGreenPhase < 5000) {
-        return;
-    }
-
-    // Grün-Phase auslösen
-    runSideStreetGreenPhase();
-    // Zeitpunkt letzter Grünphase aktualisieren
-    previousGreenPhase = millis();
-}
-
-/**
- * Reagiert auf Input der IR Fernbedienung
- */
-void handleIRInput(decode_results input) {
-    // Long-Press ignorieren
-    if (input.value == 0XFFFFFFFF) return;
-
-    // Ein/Aus-Button: Ampeln ein- oder auschalten
-    if (input.value == REMOTE_KEY_OFF) {
-        isOff = !isOff;
-        if (isOff) {
-            mainStreet.turnOff();
-            sideStreet.turnOff();
-        } else {
-            mainStreet.turnOn();
-            sideStreet.turnOn();
-        }
-        return;
-    }
-    // Falls ausgeschaltet: Abbrechen, auf keine anderen Buttons reagieren
-    if (isOff) return;
-
-    // EQ-Button: Ampeln als inaktiv markieren (gelbes Blinken)
-    if (input.value == REMOTE_KEY_EQ) {
-        isDisabled = !isDisabled;
-        if (!isDisabled) {
-            mainStreet.turnOn();
-            sideStreet.turnOn();
-        }
-    }
-    // Falls deaktiviert: Abbrechen, auf keine anderen Buttons reagieren
-    if (isDisabled) return;
-
-    // Andere Buttons handlen
-    switch (input.value) {
-        // Play-Button: eine Grün-Phase durchlaufen (simuliert wartendes Auto)
-        case REMOTE_KEY_PLAY:
-            runSideStreetGreenPhase();
-            break;
-        // Vor/Zurück-Buttons: Zwischen Grün auf Haupt- und Nebenstraße wechseln
-        case REMOTE_KEY_PREV:
-        case REMOTE_KEY_NEXT:
-            if (mainStreet.isGreen) {
-                allowTrafficOnSideStreet();
-            } else {
-                allowTrafficOnMainStreet();
-            }
-            break;
-    }
-}
-
-/**
- * Einmaliges Setup: IRremote aktivieren
+ * Modus der LED Pins konfigurieren, einmalig ausgeführt
  */
 void setup() {
-    // Serial.begin(9600);  // Serial Monitor aktivieren
-
-    irrecv.enableIRIn();
-    irrecv.blink13(true);
+    pinMode(LED_PIN, OUTPUT);
+    pinMode(BUTTON_PIN, INPUT);
 }
 
+// Timing-Variablen: speichern wann Button das letzte Mal gedrückt / LED das letzte Mal umgeschaltet
+// Lässt sich dann mit aktueller Zeit vergleichen, um zu wissen wie viel Zeit seitdem vergangen ist
+unsigned long lastButtonPress = millis();
+unsigned long lastLEDUpdate = millis();
+
 /**
- * Auf Input der IR Fernbedienung warten. Falls Ampeln nicht aus/deaktiviert:
- * automatisches Verkehrssteuerprogramm ausführen
+ * Loop-Funktion, wird automatisch wiederholt:
+ * Erst Button überprüfen und active State entsprechend aktualisieren,
+ * dann abhängig von active State wahlweise LED blinken lassen oder ausfaden.
  */
 void loop() {
-    // Input der IR Fernbedienung verarbeiten
-    if (irrecv.decode(&remoteInput)) {
-        handleIRInput(remoteInput);
-        irrecv.resume();
+    // Aktuelle Zeit, lässt sich mit Timing-Variablen (siehe oben) vergleichen
+    unsigned long now = millis();
+    // Ist true oder false, je nachdem ob Button aktuell gedrückt wird oder nicht
+    bool buttonIsPressed = digitalRead(BUTTON_PIN) == HIGH;
+
+    // Falls Button gedrückt und min. 800ms seit letztem Auslösen vorbei: active State umschalten
+    // (800ms "Cooldown" nötig, um bei gedrückt halten nicht ständig hin und her zu schalten)
+    if (buttonIsPressed && now - lastButtonPress > 800) {
+        isActive = !isActive;
+        // Zeitpunkt des letzen Button-Press aktualisieren: Cooldown startet bei nächstem Loop neu
+        lastButtonPress = now;
     }
 
-    // Ampeln aus? Abbruch
-    if (isOff) return;
-
-    // Ampeln deaktiviert? Warn-Modus (gelbes Blinken)
-    if (isDisabled) {
-        mainStreet.warningMode();
-        sideStreet.warningMode();
-        return;
+    if (isActive) {
+        // Active? LED blinken lassen
+        // Falls 100ms vorbei, seit LED letztes mal ein- bzw. ausgeschaltet, LED wieder umschalten
+        if (now - lastLEDUpdate > 100) {
+            // Falls Helligkeit größer 0, auf 0 stellen, ansonsten auf maximal: an, aus, an, aus...
+            brightness = brightness > 0 ? 0 : 255;
+            // LED-Helligkeit aktualisieren
+            analogWrite(LED_PIN, brightness);
+            // Zeitpunkt des letzen LED-Updates aktualisieren: Blink-Interval beginnt von vorne
+            lastLEDUpdate = now;
+        }
+    } else {
+        // Nicht active? LED ausfaden bzw. ausgeschaltet lassen
+        // Falls LED noch hell genug um faden zu können, Helligkeit stufenweise verringern
+        // Ansonsten ganz ausschalten bzw. ausgeschaltet lassen (brightness = 0)
+        if (brightness >= fadeStep) {
+            brightness = brightness - fadeStep;
+        } else {
+            brightness = 0;
+        }
+        // LED-Helligkeit aktualisieren
+        analogWrite(LED_PIN, brightness);
+        // Delay für Fade-Effekt
+        delay(20);
     }
-
-    // Verkehr auf Seitenstraße beobachten und managen
-    controlTrafficOnSideStreet();
 }
