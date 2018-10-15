@@ -1,5 +1,7 @@
 # Class: Sketching mit Hardware
 
+> Note: The comments within the code are written in German as of now.
+
 This repository contains the code for my university class "sketching with hardware", an introduction to working with hardware (Arduino) and C++.
 
 ### Lesson 1: Traffic Control
