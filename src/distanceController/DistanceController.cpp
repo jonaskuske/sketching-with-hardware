@@ -29,9 +29,9 @@ long DistanceController::getCurrentDistance() {
  * Sendet einen Schall-Puls aus
  */
 void DistanceController::_sendPulse() {
-    turnPinOff(_triggerPin, LOW);
+    turnPinOff(_triggerPin);
     delay(5);  // kurze Wartezeit, damit vorherige Echos vorbei sind
-    turnPinOn(_triggerPin, HIGH);
+    turnPinOn(_triggerPin);
     delay(10);
-    turnPinOff(_triggerPin, LOW);
+    turnPinOff(_triggerPin);
 }
