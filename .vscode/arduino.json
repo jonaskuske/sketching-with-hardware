@@ -1,6 +1,6 @@
 {
     "sketch": "sketching-with-hardware.ino",
     "board": "arduino:avr:uno",
-    "port": "COM3",
+    "port": "COM4",
     "output": "../.arduino-cache"
 }
