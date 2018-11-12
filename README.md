@@ -18,6 +18,10 @@ A simple LED, controllable with a button: it eithers blinks or turns off with a 
 Using a photo resistor so an LED can respond to the ambient brightness.
 > see branch: [`photo-resistor`](https://github.com/jonaskuske/sketching-with-hardware/tree/photo-resistor)
 
-### Lesson 4: Async Control  
-Using the `millis` function to let one LED blink while another responds to button presses at the same time.  
+### Lesson 4: Async Control
+Using the `millis` function to let one LED blink while another responds to button presses at the same time.
 > see branch: [`async-control`](https://github.com/jonaskuske/sketching-with-hardware/tree/async-control)
+
+### Lesson 5: Color Loop
+Controlling the different color channels of an RBG LED, smoothly fading from one color to the next to create a rainbow effect.
+> see branch: [`async-control`](https://github.com/jonaskuske/sketching-with-hardware/tree/color-loop)
