@@ -24,4 +24,4 @@ Using the `millis` function to let one LED blink while another responds to butto
 
 ### Lesson 5: Color Loop
 Controlling the different color channels of an RBG LED, smoothly fading from one color to the next to create a rainbow effect.
-> see branch: [`async-control`](https://github.com/jonaskuske/sketching-with-hardware/tree/color-loop)
+> see branch: [`color-loop`](https://github.com/jonaskuske/sketching-with-hardware/tree/color-loop)
