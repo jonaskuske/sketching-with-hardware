@@ -25,3 +25,7 @@ Using the `millis` function to let one LED blink while another responds to butto
 ### Lesson 5: Color Loop
 Controlling the different color channels of an RBG LED, smoothly fading from one color to the next to create a rainbow effect.
 > see branch: [`color-loop`](https://github.com/jonaskuske/sketching-with-hardware/tree/color-loop)
+
+### Lesson 6: Distance Meter
+Using an ultrasonic sensor to measure distance and output it to a display.
+> see branch: [`distance-meter`](https://github.com/jonaskuske/sketching-with-hardware/tree/distance-meter)
