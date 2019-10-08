@@ -7,13 +7,13 @@
  * Klasse zur Ansteuerung eines Ultraschall-Sensors
  */
 class DistanceController {
-   public:
-    DistanceController(int triggerPin, int echoPin);
-    long getCurrentDistance();
+ public:
+  DistanceController(int triggerPin, int echoPin);
+  long getCurrentDistance();
 
-   private:
-    int _triggerPin, _echoPin;
-    void _sendPulse();
+ private:
+  int _triggerPin, _echoPin;
+  void _sendPulse();
 };
 
 #endif
