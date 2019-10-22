@@ -53,3 +53,7 @@ Using an ultrasonic sensor to measure distance and output it to a display.
 A simple sequence of lights lighting up in order.
 
 > see branch: [`chaser-light`](https://github.com/jonaskuske/sketching-with-hardware/tree/chaser-light)
+
+### Lesson 2: Potentiometer
+
+> see lesson ["Photo Resistor"](https://github.com/jonaskuske/sketching-with-hardware/tree/photo-resistor)
